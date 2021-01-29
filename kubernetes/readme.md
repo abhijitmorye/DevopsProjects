@@ -154,3 +154,27 @@ kubectl get all
 kubectl apply -f deployment.yaml 
 kubectl apply -f ../currency-conversion/deployment.yaml 
 ```
+
+
+
+Definition -
+
+    Pods - kubectl get pod
+        running layer over server
+        smallest unit of k8s
+        abstraction over container
+        usually 1 application per pod
+        Each pod gets its own ip addrr
+        Pod has containers
+        new IP gets assigned on recreation of pod
+        
+
+    Replica Set - kubectl get replicaet
+        ensures that desired number of pods are running inside the cluster.
+
+
+    Changing version or image of application -
+
+        kubectl set image deployment hello-world-rest-api hello-world-rest-api=in28min/hello-world-rest-api:0.0.2.RELEASE
+
+        General Synatx - kubectl set image deployment <deployment_name> <container_name_same_as_deployement>=<new_version_image_name>
