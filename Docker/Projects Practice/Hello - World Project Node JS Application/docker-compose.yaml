@@ -1,0 +1,6 @@
+version: "3"
+services:
+  my-node-js-app:
+    image: abhijitmorye007/myappnodejsimage:0.0.2
+    ports:
+      - 3000:3000
