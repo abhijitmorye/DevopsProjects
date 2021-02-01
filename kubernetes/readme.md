@@ -182,3 +182,7 @@ Definition -
 
         General Synatx - kubectl set image deployment <deployment_name> <container_name_same_as_deployement>=<new_version_image_name>
 >>>>>>> 3611911dd83100c7225e7cd11bc510101abe8034
+
+
+    Service - service allows kubernetes cluster to accept incoming traffice on specific IP address
+              an distribute the traffic on different nodes/pods insidte the cluster.
