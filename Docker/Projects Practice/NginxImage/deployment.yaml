@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mynodejs-deployment
+  name: mynodejs-deployment
+  namespace: default
+spec:
+  replicas: 3
+  minreadySeconds: 40
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: mynodejs-deployment
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: mynodejs-deployment
+    spec:
+      containers:
+      - image: abhijitmorye007/nginx-webserver-image:0.0.1
+        imagePullPolicy: IfNotPresent
+        name: nginx-webserver-image
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: mynodejs-deployment
+  name: mynodejs-deployment
+  namespace: default
+spec:
+  ports:
+  - nodePort: 30323
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: mynodejs-deployment
+  sessionAffinity: None
+  type: LoadBalancer

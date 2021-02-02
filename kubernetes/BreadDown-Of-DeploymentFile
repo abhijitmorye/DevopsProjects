@@ -1,0 +1,105 @@
+**********************************API Version******************************************
+api version defines the version for different KIND
+
+    For Deployment -- apiVersion : app/v1
+    For Service -- v1
+
+
+apiVersion: apps/v1
+
+
+********************************KIND********************************************
+    Deifferent KIND are avaialble , Deployment, Service
+
+
+kind: Deployment
+************************************Metadata****************************************
+    Metada desribes the name,namespace and app(in Lables) for deplyment or service
+
+
+    Labels - Labels are very important in kubernetes, we can specify the version for different deployement 
+             that have version: <version_number> specified in labels--Version section
+
+             Now, we can specify this version in selectors of service so that service will be applicable for
+            only this version and traffic will be routed to only that deployment.
+
+
+metadata:
+  labels:
+    app: hello-world-rest-api
+  name: hello-world-rest-api
+  namespace: default
+
+
+***************************************Spec*************************************
+
+    spec defines the overall specification of deployment 
+
+            - replicas - how many pods will be there in deployment
+            - minReadySeconds - min seconds older deployment should wait before starting new Deployment
+            - revisionHistoryLimit -
+            - Selectors - !Important -- needs to exactly map with pods labels section in template.
+            - strategy - strategy for implementing new deployment or version upgrade
+
+            --template -- will define the specification for pods inside the deployemnt.
+
+                metadata - metadata of pods
+                        metadata:
+                         labels:
+                            app : <container_labale_name>
+                spec - specification for container
+                         spec: 
+                            containers: 
+                                -image : <image+path>
+                                 impagePullPolicy : IfnotPresent,Always
+                                 name: <Name_of_containers>
+                                restartPolicy
+                                terminationGracePeriodSeconds
+
+
+
+spec:
+  replicas: 5
+  minReadySeconds: 45
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: hello-world-rest-api
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: hello-world-rest-api
+    spec:
+      containers:
+      - image: in28min/hello-world-rest-api:0.0.1.RELEASE
+        imagePullPolicy: IfNotPresent
+        name: hello-world-rest-api
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+
+****************************************************************************
+
+---
+
+apiVersion: v1   // apiVersion of an Service
+kind: Service    // KIND i.e specific operation
+metadata:        // metadata for aan service
+  labels:
+    app: hello-world-rest-api   //name for service 
+  name: hello-world-rest-api
+  namespace: default
+spec:                           // spec for service,port,targetPort etc
+  ports:
+  - nodePort: 31601
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: hello-world-rest-api  //selector must match with the label--app section in pods(template) in deployement
+  sessionAffinity: None
+  type: LoadBalancer
