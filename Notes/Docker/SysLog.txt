@@ -1,0 +1,22 @@
+Syslog
+The Syslog log driver will write all the container logs to the central syslog on the host. "syslog is a widely used standard for message logging. It permits separation of the software that generates messages, the system that stores them, and the software that reports and analyses them." Wikipedia
+
+This log-driver is designed to be used when syslog is being collected and aggregated by an external system.
+
+Example
+The command below will redirect the redis logs to syslog.
+
+                docker run -d --name redis-syslog --log-driver=syslog redis
+
+Accessing Logs
+If you attempted to view the logs using the client you'll recieve the error FATA[0000] "logs" command is supported only for "json-file" logging driver
+
+Instead, you need to access them via the syslog stream.
+
+
+The third option is to disable logging on the container. This is particularly useful for containers which are very verbose in their logging.
+
+Example
+When the container is launched simply set the log-driver to none. No output will be logged.
+
+                docker run -d --name redis-none --log-driver=none redis
