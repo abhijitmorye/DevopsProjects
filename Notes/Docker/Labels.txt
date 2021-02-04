@@ -1,0 +1,42 @@
+Single Label
+To add a single label you use the l =<value> option. The example below assigns a label called user with an ID to the container. This would allow us to query for all the containers running related to that particular user.
+
+                docker run -l user=12345 -d redis
+
+External File
+If you're adding multiple labels, then these can come from an external file. The file needs to have a label on each line, and then these will be attached to the running container.
+
+This line creates two labels in the file, one for the user and the second assigning a role.
+
+                echo 'user=123461' >> labels && echo 'role=cache' >> labels
+
+The --label-file=<filename> option will create a label for each line in the file.
+
+                docker run --label-file=labels -d redis
+
+
+
+Step 2 - Docker Images
+Labelling images work in the same way as containers but are set in the Dockerfile when the image is built. When a container has launched the labels of the image will be applied to the container instance.
+
+Single Label
+Within a Dockerfile you can assign a label using the LABEL instruction. Below the label vendor is created with the name Scrapbook.
+
+LABEL vendor=Katacoda
+
+Multiple Labels
+If we want to assign multiple labels then, we can use the format below with a label on each line, joined using a back-slash ("\"). Notice we're using the DNS notation format for labels which are related to third party tooling.
+
+LABEL vendor=Katacoda \ com.katacoda.version=0.0.5 \ com.katacoda.build-date=2016-07-01T10:47:29Z \ com.katacoda.course=Docker
+
+
+
+Filtering Containers
+The docker ps command allows you to specify a filter based on a label name and value. For example, the query below will return all the containers which have a user label key with the value katacoda.
+
+                        docker ps --filter "label=user=scrapbook"
+
+Filtering Images
+The same filter approach can be applied to images based on the labels used when the image was built.
+
+                        docker images --filter "label=vendor=Katacoda"
