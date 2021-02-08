@@ -1,0 +1,7 @@
+version: "3"
+services:
+  my-nginx-deployment:
+    image: abhijitmorye007/nginx-webserver-image:0.0.1
+    ports:
+    - 80:80
+        
