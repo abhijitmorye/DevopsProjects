@@ -186,3 +186,61 @@ Definition -
 
     Service - service allows kubernetes cluster to accept incoming traffice on specific IP address
               an distribute the traffic on different nodes/pods insidte the cluster.
+
+
+
+    namespace - create isolation between different deployments inside the cluster.
+                by default if we dont specify the namespace for deployment,it will get created in
+                "default" namespace.
+
+        Syntax :-
+
+        kubectl create namespace my-namespace
+
+
+        Scenario in which namespace is userid
+            1. To isolate deployments
+            2. To restrict resource usage among different deployment
+            3. To avoid any conflict between two deployments.
+
+
+    Ingress - ingress will allow you to hide deployed service from outside world.
+
+              it specifies the rules through which, you can connect to services that are deployed insdie the cluster.
+
+              Ingress controller -- evaluates and checks ingress rules before forwording it to the ingress service. Entry point to the cluster.
+
+                (for minikube, need to install minkube ingress controller 
+                 seperately while cloud service has its own. 
+                    
+                    Syntax --  minikube addons enable ingress.
+                    
+                )
+
+
+              pod <---  service <--- ingress <--- outside world
+
+
+
+              ------------------------------------------------------------------------------------
+                    apiVersion: extensions/v1beta1
+                    kind: Ingress
+                    metadata:
+                    name: gateway-ingress
+                    annotations:
+                        nginx.ingress.kubernetes.io/rewrite-target: /
+                    spec:
+                    rules:
+                    - http:
+                        paths:
+                        - path: /currency-exchange/*
+                            backend:
+                            serviceName: currency-exchange
+                            servicePort: 8000          
+                        - path: /currency-conversion/*
+                            backend:
+                            serviceName: currency-conversion
+                            servicePort: 8100
+
+                ------------------------------------------------------------------------------------
+

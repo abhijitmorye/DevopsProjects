@@ -1,0 +1,14 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: mongo-express-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - host: mongodeplexpress.com
+      http:
+        paths:
+          - backend:
+              serviceName: mongoexpress-service
+              servicePort: 8081
