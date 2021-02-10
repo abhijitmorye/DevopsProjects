@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-katacoda-deployment
+  namespace: default
+  labels:
+    app: katacodedepl
+spec:
+  replicas: 3
+  minReadySeconds: 45
+  selector:
+    matchLabels:
+      app: katacodedepl
+  template:
+    metadata:
+      name: katacodedepl
+      labels:
+        app: katacodedepl
+    spec:
+      containers:
+        - image: abhjitmorye007/katacoe-deployment
+          imagePullPolicy: IfNotPresent
+          name: katacodedepl
+      restartPolicy: always
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-katacode-service
+  namespace: default
+  labels:
+    app: my-katacode-service
+spec:
+  selector: 
+    app: katacodedepl
+  ports:
+    - protocol: TCP
+      port: 8080
+      tragetPort: 8080
+      nodePort: 30000
+  type: LoadBalancer
