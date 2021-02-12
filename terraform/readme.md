@@ -77,3 +77,58 @@ terraform workspace select default
 terraform workspace list
 terraform workspace select prod-env
 ```
+
+
+
+plan Command - will give brief sumamry what will happen if we apply changes 
+
+apply command - will actually execute comand.
+
+States in Terraform are :
+
+        Desired - is the state that we specify in .tf file
+
+        KNOWN - is the state that Terraform has stored in .tfstate file at tiem of creating resources.
+
+        ACTUAL - is the current state of resoiurce that terraform will look for whenever we apply changes, and compare it with the KNOWN state.
+
+        Terraform create two state files while executing any changes--
+
+            .tfstate  -- current state
+            .tfstatebackup -- previous step prior to the executing of current state
+
+
+Tags in Terraform --
+
+    1.provider tag = it defines the cloud provider that we want to use
+
+        '''
+            syntax :
+
+                    provide "aws" {
+                        region="us-east-1"
+                        version=" ~> 3.0"
+                    }
+        '''
+
+
+    2.resource tag = it defines the that we want to create resource in our cloud.
+                   Anything we want to create in our cloud using terraform, use "resource" tag
+
+                   It takes two argument --
+
+                        "name_of_resource" = eg aws_s3_bucket
+                        "terraform_internal_name_for_that_resource"
+
+
+        '''
+            syntax :
+
+                    resource "aws_s3_bucket" "my_s3_bucket"{
+                        bucket="my-s3-bucket-001"
+                        versioning {
+                            enable=true
+                        }
+                    }
+
+        '''
