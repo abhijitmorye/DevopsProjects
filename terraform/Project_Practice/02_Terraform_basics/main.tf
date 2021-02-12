@@ -1,7 +1,7 @@
 provider "aws"{
     region="us-east-1"
-    access_key="AKIASADG2SWDUKVMZYNY"
-    secret_key="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"
+    access_key=""
+    secret_key=""
 }
 
 resource "aws_s3_bucket" "my_s3_devopsbucket" {
