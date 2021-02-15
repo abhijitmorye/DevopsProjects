@@ -4,3 +4,7 @@ services:
     image: abhijitmorye007/myappnodejsimage:0.0.2
     ports:
       - 3000:3000
+    networks:
+      - my-node-js-network
+networks:
+  my-node-js-network

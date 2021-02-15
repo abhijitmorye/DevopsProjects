@@ -1,0 +1,1 @@
+aws_iam_users_name_variable = "VALUE_FROM_VARIABLE_FILE"

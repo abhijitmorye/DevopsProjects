@@ -3,8 +3,8 @@ services:
   my-catacode-deployment
     image: abhjitmorye007/katacoe-deployment:0.0.1
     ports:
-      - 8080:8080
+      - 3000:3000
     networks:
-      - my-katacoe-network
+      - my-katacode-network
 networks:
   my-katacode-network

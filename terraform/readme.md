@@ -79,18 +79,17 @@ terraform workspace select prod-env
 ```
 
 
+## plan Command - will give brief sumamry of what will happen if we apply changes 
 
-plan Command - will give brief sumamry what will happen if we apply changes 
+## apply command - will actually execute command.
 
-apply command - will actually execute comand.
-
-States in Terraform are :
+## States in Terraform are :
 
         Desired - is the state that we specify in .tf file
 
-        KNOWN - is the state that Terraform has stored in .tfstate file at tiem of creating resources.
+        KNOWN - is the state that Terraform has stored in .tfstate file at time of creating resources.
 
-        ACTUAL - is the current state of resoiurce that terraform will look for whenever we apply changes, and compare it with the KNOWN state.
+        ACTUAL - is the current state of resources that terraform will look for whenever we apply changes, and compare it with the KNOWN state.
 
         Terraform create two state files while executing any changes--
 
@@ -98,21 +97,21 @@ States in Terraform are :
             .tfstatebackup -- previous step prior to the executing of current state
 
 
-Tags in Terraform --
+## Tags in Terraform --
 
     1.provider tag = it defines the cloud provider that we want to use
 
-        '''
+        ```
             syntax :
 
                     provide "aws" {
                         region="us-east-1"
                         version=" ~> 3.0"
                     }
-        '''
+        ```
 
 
-    2.resource tag = it defines the that we want to create resource in our cloud.
+    2.resource tag = it defines that we want to create resource in our cloud.
                    Anything we want to create in our cloud using terraform, use "resource" tag
 
                    It takes two argument --
@@ -121,14 +120,126 @@ Tags in Terraform --
                         "terraform_internal_name_for_that_resource"
 
 
-        '''
+        ```
             syntax :
 
                     resource "aws_s3_bucket" "my_s3_bucket"{
                         bucket="my-s3-bucket-001"
                         versioning {
-                            enable=true
+                            enabled=true
                         }
                     }
 
-        '''
+                    resource "aws_iam_user" "my_iam_user"{
+                        name="my_iam_user_001"
+                    }
+
+        ```
+
+## creating multiple resource in aws using Terraform
+
+
+            ```
+                Syntax :
+
+                        provider "aws" {
+                            region="us-east-1"
+                            access_key=""
+                            secret_key=""
+                        }
+
+                        resource "aws_iam_user" "my_aws_iam_users" {
+                            count=4
+                            name="my_aws_users_${count.index}"
+                        }
+            ```
+
+
+## adding variable to the terraform.
+
+        
+        1. using default value -- If we don't specify the default value in variable 
+                                   section then terraform will prompt for the value when we execute command "terraform apply".
+            ```
+                syntax:
+
+                        variable "<varibale_name>" {
+                            type=string  #any,bool,number,map,tuple,set,object,list
+                            default="value_for_variable"
+                        }
+
+                        resourse "aws_s3_bucket" "my_aws_s3_bucket" {
+                            count = 3
+                            bucket = "${var.variable_name}_${count.index}"
+                        }
+
+
+        2. can also EXPORT or SET as variable--
+
+            ```
+            $SET TF_VAR_<VARIABLE_NAME>=ENV_VAR_MY_AWS_IAM_USER
+
+            ```
+
+        3. using "variables.tfvars"  file --
+
+            ```
+                VARIBALE_NAME="value"
+
+            ```
+
+        4. using command line --
+
+            ```
+                syntax :
+
+                        terraform apply -refresh=false -var="<variable_name>=<value>"
+            ```
+
+        5. Precedance -- command line >> .tfvars.file >> env_variable
+
+
+## terraform list--
+
+     1. can create list in terraform for variables
+
+        [Terrform Collection](https://www.terraform.io/docs/language/functions/list.html)
+
+
+            ```
+                syntax :
+
+
+                    variable "<list_variable>" {
+                        default=["value1","value2","value3","value4"]
+                    }
+
+                    resourse "aws_iam_user" "my_aws_iam_user" {
+                        count = length(var.names)
+                        name = var.names[count.index]
+                    }
+
+            ```
+    2.  Terraform list addition of new item in list will modify the existing terraform plan dramatically as elements in list are stored using number as index and while executing "terraform plan/apply" command will check that elements at index are changed then it will change accordingly.
+
+        However, we can convert list to set using  ```toset(var.list)``` and use ```for_each```
+        function to iterate through sets
+
+
+
+            ```
+
+                syntax :
+
+                    variable "names" {
+                        default=["value1","value2","value3","value4"]
+                    }
+
+                    resource "aws_iam_user" "my_aws_iam_user" {
+                        for_each = toset(var.names)
+                        name=each.value
+                    }
+            ```
+
+
+   
