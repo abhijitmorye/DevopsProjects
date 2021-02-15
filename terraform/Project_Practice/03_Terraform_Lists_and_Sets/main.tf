@@ -4,8 +4,8 @@ variable "names" {
 
 provider "aws" {
   region     = "us-east-1"
-  access_key = "AKIASADG2SWDQDCFOWZQ"
-  secret_key = "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"
+  access_key = ""
+  secret_key = ""
 }
 
 resource "aws_iam_user" "my_aws_iam_user" {

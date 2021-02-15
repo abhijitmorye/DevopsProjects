@@ -6,8 +6,8 @@ variable "aws_iam_users_name_variable" {
 
 provider "aws" {
   region     = "us-east-1"
-  access_key = "AKIASADG2SWDQDCFOWZQ"
-  secret_key = "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"
+  access_key = ""
+  secret_key = ""
 }
 
 
