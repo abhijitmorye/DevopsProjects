@@ -230,17 +230,17 @@ Definition -
                     annotations:
                         nginx.ingress.kubernetes.io/rewrite-target: /
                     spec:
-                    rules:
-                    - http:
-                        paths:
-                        - path: /currency-exchange/*
-                            backend:
-                            serviceName: currency-exchange
-                            servicePort: 8000          
-                        - path: /currency-conversion/*
-                            backend:
-                            serviceName: currency-conversion
-                            servicePort: 8100
+                        rules:
+                            - http:
+                              paths:
+                                - path: /currency-exchange/*
+                                  backend:
+                                    serviceName: currency-exchange
+                                    servicePort: 8000          
+                                - path: /currency-conversion/*
+                                  backend:
+                                    serviceName: currency-conversion
+                                    servicePort: 8100
 
                 ------------------------------------------------------------------------------------
 
