@@ -1,5 +1,5 @@
 variable "names" {
-  default = ["abhijit", "naruto", "kakashi"]
+  default = ["abhijit", "naruto"]
 }
 
 provider "aws" {

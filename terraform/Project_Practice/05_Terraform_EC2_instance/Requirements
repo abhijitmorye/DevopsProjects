@@ -1,0 +1,5 @@
+region - US East (N. Virginia)us-east-1
+amazon machine image - ami-047a51fa27710816e
+instance type - t2.micro
+vpc - vpc-eef45893
+security group

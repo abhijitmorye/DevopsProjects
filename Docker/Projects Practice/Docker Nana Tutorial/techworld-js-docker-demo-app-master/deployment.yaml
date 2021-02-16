@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myTechWorldDepl
+  namespace: default
+  labels:
+    app: myTechWorldDepl
+spec:
+  replicas: 3
+  minReadySeconds: 45
+  selector:
+    matchLabels:
+      app: myTechWorldPod
+  template:
+    metadata:
+      name: myTechWorldPod
+      labels:
+        app: myTechWorldPod
+    spec:
+      containers:
+        - image: abhijitmorye007/techWorldImage:0.0.1
+          ports:  
+            - containerPort: 3000
+          imagePullPolicy: IfNotPresent
+          name: techWorldContainer
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: techWorldService
+  namespace: default
+spec:
+  selector:
+    app: myTechWorldPod
+  ports:
+    - protocol: TCP
+      nodePort: 30000
+      targetPort: 3000
+      port: 3000
+  type: LoadBalancer
+  sessionAffinity: None

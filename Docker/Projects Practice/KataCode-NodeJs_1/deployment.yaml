@@ -18,7 +18,7 @@ spec:
         app: katacodedepl
     spec:
       containers:
-        - image: abhjitmorye007/katacoe-deployment
+        - image: abhjitmorye007/katacode-deployment
           imagePullPolicy: IfNotPresent
           name: katacodedepl
       restartPolicy: always

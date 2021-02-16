@@ -196,7 +196,7 @@ terraform workspace select prod-env
                         terraform apply -refresh=false -var="<variable_name>=<value>"
             ```
 
-        5. Precedance -- command line >> .tfvars.file >> env_variable
+        5. Precedance -- command line >> .tfvars.file >> env_variable >> default value set
 
 
 ## terraform list--
@@ -220,7 +220,7 @@ terraform workspace select prod-env
                     }
 
             ```
-    2.  Terraform list addition of new item in list will modify the existing terraform plan dramatically as elements in list are stored using number as index and while executing "terraform plan/apply" command will check that elements at index are changed then it will change accordingly.
+    2.  Terraform list -- addition of new item in list will modify the existing terraform plan dramatically as elements in list are stored using number as index and while executing "terraform plan/apply" command will check that elements at index are changed then it will change accordingly.
 
         However, we can convert list to set using  ```toset(var.list)``` and use ```for_each```
         function to iterate through sets
@@ -242,4 +242,147 @@ terraform workspace select prod-env
             ```
 
 
-   
+## Terraform Map :
+    
+        1. key- value pair in terraform
+
+            ```
+                syntax :
+
+                        variable "<variable_name>" {
+                            default= {
+                                key1 : "value1",
+                                key2 : "value2",
+                                key3: "value3",
+                                key4: "value4" 
+                            }
+                        }
+
+
+                        variable "names" {
+                            default = {
+                                abhi: "India",
+                                naruto: "Village hidden in leaf",
+                                obito: "Village hidden in rain"
+
+                            }
+                        }
+
+                        resource "aws_iam_user" "my_aws_iam_user" {
+                            for_each = var.<variable_name>
+                            name = each.key
+                            tags = {
+                                country: each.value
+                            }
+                        }]
+
+            ```
+
+        2. key:"value" pairs within value i.e. dictionary within dictionary
+
+
+            ```
+                syntax :
+
+                        variabel "names" {
+                            default = {
+                                abhi: {country:"india"},
+                                naruto : {country:"leaf village"}
+                            }
+                        }
+
+
+
+
+                        resource "aws_iam_user" "my_aws_iam_user" {
+                                    #using map
+                                    for_each = var.users
+                                    name= each.key
+                                    tags = {
+                                    country:each.value.country
+                            }
+
+
+
+# Creating EC2 instance in AWS using terraform
+
+
+## Creating security group --
+
+    1. Security group specifies the rules that should be imposed on EC2 or virtual server
+       to retsrict access,
+
+    2. Rule for incoming traffic (access from valid ip address on valid port)
+
+    3. Rule for outgoing traffic
+
+
+        ```
+            syntax :
+
+
+                resource "aws_security_group" "http_server_sg" {
+                    name = "http_server_sg"
+
+                    #to which vpc id , this security group should be part of
+                    vpc_id = "<vpc_id>"
+
+
+                    #igress rule .. rule for incoming traffic
+                    #for  http server/access, can have multiple ingress rules
+
+                    ingress {
+                        from_port = 80
+                        to_port = 80
+                        protocol = "tcp"
+                        cidr_blocks = ["0.0.0.0/0"]   # specifies range of IP addrr.
+                    }
+
+
+                    #egress rule.. rule for outgoing traffic 
+
+                    engree {
+                        from_port = 0
+                        to_port = 0
+                        protocol = -1
+                        cider_blocks = ["0.0.0.0/0"]
+
+                    }
+
+                    tags = {
+                        name = "http_server_sg"
+                    }
+
+                }
+
+        ``` 
+
+
+    4. Create an key-value pair for EC2 to install http server or other configuration
+
+
+    5. Creating EC2 resource configuration in terrafrome
+
+        ```
+            syntax :
+
+                    resource "aws_instance" "<instance_name>" {
+
+                        #ami image name i.e. which os should be used
+                        ami = "<ami_name>"
+
+                        #instance type for this EC2 instance .. hardware basically
+                        instance_type = "<instance_type>"
+
+                        #key that should be associated with this EC2 instance
+                        key_name = "<key_name_created_in_step_4>"
+
+                        #security groups to be attached
+                        vpc_security_group_ids = [aws_security_group.<name_of_security_group>.id]
+
+                        #subnet to which this EC2 should be attached
+                        subnet_id=<subnet_id>
+                    }
+
+        ```
+

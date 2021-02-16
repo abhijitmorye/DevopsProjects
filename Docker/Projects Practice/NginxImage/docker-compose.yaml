@@ -4,4 +4,8 @@ services:
     image: abhijitmorye007/nginx-webserver-image:0.0.1
     ports:
     - 80:80
+    networks:
+      - my-nginx-network
+networks: 
+  my-nginx-network
         
