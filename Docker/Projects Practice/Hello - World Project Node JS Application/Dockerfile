@@ -11,6 +11,8 @@ COPY ./app /home/app
 WORKDIR /home/app
 # set working directory as /home/app
 
+#expose port
+EXPOSE 3000
 
 CMD ["node","app.js"]
 #run app.js command

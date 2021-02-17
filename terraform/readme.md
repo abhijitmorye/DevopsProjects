@@ -325,7 +325,7 @@ terraform workspace select prod-env
                     name = "http_server_sg"
 
                     #to which vpc id , this security group should be part of
-                    vpc_id = "<vpc_id>"
+                    vpc_id = "<vpc_id>" 
 
 
                     #igress rule .. rule for incoming traffic
@@ -382,7 +382,149 @@ terraform workspace select prod-env
 
                         #subnet to which this EC2 should be attached
                         subnet_id=<subnet_id>
+
                     }
 
         ```
 
+
+## Connection to the EC2 instance
+
+    To connect to the EC2 instance we need, below details 
+
+        type = which access we want .. ssh
+        host = host to which we want to connect if want to connect itself use self
+        user = which user should be used to connect
+        private_key = private key for that particular instance to whoch we want to connect
+
+    
+    ```
+        Syntax :
+        
+            variable "variable_path_for_pem_file" {
+                default = "path_to_pem_file"
+            }
+
+            provider "aws" {
+                region = "<region_name>"
+                access_key = "<access_key>"
+                secret_key = "<secret_key>"
+            }
+
+            resource "aws_security_group" "http_server" {
+                name = "security_group"
+
+                vpc_id = "<vpc_id>"
+
+                ingress {
+                    from_port = "<from_port>"
+                    to_port = "<to_port>"
+                    protocol = "<protocol>"
+                    cidr_blocks = ["0.0.0.0/0"]
+                }
+
+                
+                enress {
+                    from_port = "<from_port>"
+                    to_port = "<to_port>"
+                    protocol = "<protocol>"
+                    cidr_blocks = ["0.0.0.0/0"]
+                }
+
+                tags {
+                    name = "https-security_group"
+                }
+            }
+
+            resource "aws_instance" "http-server-ec2" {
+
+                ami = "<ami>"
+
+                vpc_security_group_ids = "<vpc_security_group_ids>"
+
+                subnet_id = "<subnet_id>"
+
+                instance_type = "<instance_type>"
+
+                key_name = "<key_name>"
+
+
+                connection {
+                    type = "<ssh>"
+                    user = "<user>"
+                    private_key = file(var.variable_path_for_pem_file)
+                    host = <host/self.public_ip>
+                }
+            }
+
+        ```
+
+    2. after connection we need to eecute specific commmands.lets say we want to install we server
+
+
+
+        ```
+            syntax :
+
+                provisioner "remote-exec"{
+                    inline = [
+                        "sudo yum install httpd -y",
+                        "sudo start httpd service",
+                        "echo Message -- public dns -- ${self.public_dns} | sudo tee /var/www/html/index/html"
+                    ]
+                }
+
+        ```
+
+## Fetching defualt VPC from aws and use it into terraform .tf file
+
+        ```
+            syntax :
+
+                    resource "aws_default_vpc" "default_vpc" {
+
+                    }
+
+                    resource "aws_security_group" "http_server_sg" {
+                        name = "<name>"
+                        vpc_id = aws_default_vpc.default.id
+                    }
+
+        ```
+
+        
+## Use of data provider tag in Terraform :-
+
+        we can access fields in data provider by usig "data.<data_provider_name>.<internal_name>"
+
+
+        ```
+            syntax :
+
+
+                    data "aws_subnet_ids" "default_subnet_ids" {
+                        vpc_id = aws_default_vpc.default.id
+                    }
+
+
+                    data "aws_ami" "aws_ami_linux_2" {
+                        most_recent = true 
+                        owner = "amazon"
+
+                        filter {
+                            name = "name"
+                            values = ["amzn2-ami-hvm-*"]
+                        }
+                    }
+
+
+                    resource "aws_instance" "ec2_instance" {
+                        
+                        ami = data.aws_ami.aws_ami_linux_2.id
+                        instance_type = "<instance_type>"
+                        vpc_security_group_ids = "<vpc_security_group_ids>"
+                        key_name = "<key_name>"
+                        subnet_id = tolist(data.aws_subnet_ids.default_subnet_ids.ids)[0]
+
+
+                    }

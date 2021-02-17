@@ -1,0 +1,25 @@
+version: "3"
+services:
+  currency-exchange:
+     image: in28min/currencyexchange:0.0.1.RELEASE
+     ports:
+     -  8000:8000
+     networks:
+     -  my-currency-network
+  currency-conversion:
+      image: in28min/currencyconversion:0.0.1.RELEASE
+      ports:
+        - 8081:8081
+      networks:
+        - my-currency-network
+      environment:
+        - CURRENCY_EXCHANGE_HOST: http://currency-exhange
+      depends_on:
+        - currency-exchange
+      volumes:
+        currency_vol:/vat/tmp
+networks:
+  my-currency-network
+volumes:
+  currency_vol:
+    driver : local

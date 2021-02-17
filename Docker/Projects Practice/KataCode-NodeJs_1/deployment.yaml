@@ -21,6 +21,8 @@ spec:
         - image: abhjitmorye007/katacode-deployment
           imagePullPolicy: IfNotPresent
           name: katacodedepl
+          ports:
+            - containerPort: 3000
       restartPolicy: always
 
 ---
@@ -37,7 +39,7 @@ spec:
     app: katacodedepl
   ports:
     - protocol: TCP
-      port: 8080
-      tragetPort: 8080
+      port: 3000
+      tragetPort: 3000
       nodePort: 30000
   type: LoadBalancer
