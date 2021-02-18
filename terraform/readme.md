@@ -431,7 +431,7 @@ terraform workspace select prod-env
                     cidr_blocks = ["0.0.0.0/0"]
                 }
 
-                tags {
+                tags ={
                     name = "https-security_group"
                 }
             }
