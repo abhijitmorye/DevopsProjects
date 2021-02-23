@@ -1,8 +1,3 @@
-variable "aws_key_pair" {
-  default = "D:\\Udemy\\TerraForm AWS IAM Access Key\\aws\\aws_keys\\default_ec2.pem"
-}
-
-
 provider "aws" {
   region     = "us-east-1"
   access_key = ""
@@ -13,39 +8,6 @@ provider "aws" {
 #fetch default vpc from AWS for whoch region is specified
 resource "aws_default_vpc" "default" {
 }
-
-
-#data provider for aws_subnet_ids
-data "aws_subnet_ids" "default_subnet_ids" {
-  vpc_id = aws_default_vpc.default.id
-}
-
-
-
-# data provider for amazon ami
-data "aws_ami" "aws_ami_linux_2" {
-  most_recent = true       # fetch most recent one
-  owners      = ["amazon"] # which type of machine we want
-
-  filter {
-    name   = "name" #to which field we want to apply filter
-    values = ["amzn2-ami-hvm-*"]
-  }
-}
-
-
-
-#aws ami ids data provider
-data "aws_ami_ids" "aws_ami_linux_2_ids" {
-  # most_recent = true   # fetch most recent one
-  owners = ["amazon"] # which type of machine we want
-
-  # filter {
-  #   name = "name" #to which field we want to apply filter
-  #   values = ["amzn2-ami-hbm-*"]
-  # }
-}
-
 
 
 

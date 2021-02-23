@@ -487,7 +487,7 @@ terraform workspace select prod-env
 
                     resource "aws_security_group" "http_server_sg" {
                         name = "<name>"
-                        vpc_id = aws_default_vpc.default.id
+                        vpc_id = aws_default_vpc.default_vpc.id
                     }
 
         ```
