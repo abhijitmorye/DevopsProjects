@@ -1,7 +1,7 @@
 provider "aws" {
   region = "us-east-1"
-  access_key  = ""
-  secret_key  = ""
+  access_key  = "AKIASADG2SWD7XHEOCVN"
+  secret_key  = "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"
 }
 
 
@@ -35,7 +35,7 @@ resource "aws_security_group" "http_sg" {
   }
 }
 
-resource "aws_instance" "http_server" {
+resource "aws_instance" "http_servers" {
   ami = data.aws_ami.aws_ami_linux.id
 
   instance_type = "t2.micro"
@@ -44,7 +44,16 @@ resource "aws_instance" "http_server" {
 
   vpc_security_group_ids = [aws_security_group.http_sg.id]
 
-  subnet_id = tolist(data.aws_subnet_ids.default_subnet_ids.ids)[0]
+  #creating ec2 instances in different subnet of particular vpc_id
+
+  for_each = data.aws_subnet_ids.default_subnet_ids.ids
+
+  subnet_id = each.value
+
+  tags = {
+
+    name = "Http_server_${each.value}"
+  }
 
   connection {
     host = self.public_ip
@@ -59,11 +68,15 @@ resource "aws_instance" "http_server" {
 
   provisioner "remote-exec" {
     inline = [
+
+      #install http server
       "sudo yum install httpd -y",
 
+      #start http server
       "sudo service httpd start",
 
-      "echo ABHIJIT | sudo tee /var/www/html/index.html"
+      #write message and save it into index.html file in /var/www/html/index
+      "echo Public DNS - ${self.public_dns} | sudo tee /var/www/html/index.html"
     ]
   }
 
